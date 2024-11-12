@@ -65,4 +65,11 @@ public class DonorsController {
         this.dataGeneratorService.generateRandomDonorsAndDonations(numDonors, maxDonationsPerDonor);
         return "redirect:/";
     }
+
+
+    @GetMapping("/example")
+    public String example(Model model) {
+        model.addAttribute("rows", donorRepository.jenniferQueryOne());
+        return "donors/example";
+    }
 }

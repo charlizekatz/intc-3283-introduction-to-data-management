@@ -1,6 +1,7 @@
 package edu.northwestu.intc3283.datasourcestarter.repository;
 
 import edu.northwestu.intc3283.datasourcestarter.entity.Donor;
+import edu.northwestu.intc3283.datasourcestarter.reports.JenniferQueryOneRow;
 import edu.northwestu.intc3283.datasourcestarter.reports.TopDonationReportDTO;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -36,4 +37,23 @@ public interface DonorsRepository extends CrudRepository<Donor, Long> {
                         LIMIT :limit
             """)
     List<TopDonationReportDTO> findTopDonors(Integer limit);
+
+
+    @Query("""
+SELECT d2.first_name,
+       d2.last_name,
+       year(d.created_at) as year_donated,
+       month(d.created_at) as month_donated,
+       sum(d.amount) as total
+FROM donations d
+         INNER JOIN donors d2 on d.donor_id = d2.id
+WHERE year(d.created_at) = 2024 and
+    month(d.created_at) = 10
+GROUP BY year_donated, month_donated, d.donor_id
+ORDER BY total DESC
+limit 5
+;
+""")
+
+    List<JenniferQueryOneRow> jenniferQueryOne();
 }
